@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/css/jquery-3.js" type="text/javascript" ></script>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+    <script src="/css/axios.min.js"></script>
+    <link href="/css/auth.css" rel="stylesheet">
+    <title th:text="#{general.info}">Info</title></head>
+<body><div class="TitleTop" th:text="#{general.info}">Info</div>
+<!-- Mount point -->
+<table class="text-white books" id="books-table">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td th:text="#{general.title}">Title</td>
+        <td th:text="#{general.author}">Author</td>
+        <td th:text="#{general.genre}">Genre</td>
+        <td th:text="#{general.comment}">Comment</td>
+        <td th:text="#{general.edit}">Edit</td>
+        <td th:text="#{general.delete}">Delete</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- This is a Vue2 template -->
+    <tr v-for="book in books">
+        <td>{{book.id}}</td>
+        <td>{{book.title}}</td>
+        <td>{{book.author}}</td>
+        <td>{{book.genre}}</td>
+        <td>{{book.comment}}</td>
+        <td>
+            <a :href="'/book/'+book.id" th:text="#{general.edit}">Edit</a>
+        </td>
+        <td>
+            <button @click="deleteBook(book.id)" type="submit" value="value" class="btn-link" th:text="#{general.delete}">Delete</button>
+            <div><pre>{{ response }}</pre></div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <div class="text-white" style="width:200px">
+        <form method="get" action="/book/new">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.new}">Create new</button>
+        </form>
+    </div>
+    <div class="text-white" style="width:200px">
+        <form method="get" action="/logout">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.logout}">Logout</button>
+        </form>
+    </div>
+    <div class="text-white" style="width:200px">
+        <form method="get" action="/batch">
+            <button type="submit" class="btn btn-primary btn-block btn-large">Spring Batch</button>
+        </form>
+    </div>
+</div>
+<script>
+    // fetch, ES6, Vue
+    axios.get('/api/allbooks')
+
+        .then(response => {
+            new Vue({
+                el: '#books-table',
+                data: {
+                    books : response.data,
+                    response:''
+                },
+                methods: {
+                    deleteBook(e) {
+                        axios.delete(`/book/${e}`, {bookid: e})
+                            .then(response => {this.books=this.books.filter(b=>b.id!=e);
+                    })
+                    },
+                }
+            })
+        });
+
+</script>
+</body>
+</html>

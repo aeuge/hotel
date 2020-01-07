@@ -1,0 +1,6 @@
+spring:
+  banner:
+    location: banner_test.txt
+  shell:
+    interactive:
+      enabled: false
