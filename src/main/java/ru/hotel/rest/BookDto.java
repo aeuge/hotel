@@ -1,7 +1,8 @@
 package ru.hotel.rest;
 
 import lombok.Data;
-import ru.hotel.domain.Book;
+import ru.hotel.domain.Hotel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,5 +22,5 @@ public class BookDto {
         this.title = title;
     }
 
-    public BookDto(Book book) { toDto(book); }
+    public BookDto(Hotel hotel) { toDto(hotel); }
 }

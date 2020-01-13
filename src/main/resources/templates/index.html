@@ -23,17 +23,17 @@
     </thead>
     <tbody>
     <!-- This is a Vue2 template -->
-    <tr v-for="book in books">
-        <td>{{book.id}}</td>
-        <td>{{book.title}}</td>
-        <td>{{book.author}}</td>
-        <td>{{book.genre}}</td>
-        <td>{{book.comment}}</td>
+    <tr v-for="hotel in books">
+        <td>{{hotel.id}}</td>
+        <td>{{hotel.title}}</td>
+        <td>{{hotel.author}}</td>
+        <td>{{hotel.genre}}</td>
+        <td>{{hotel.comment}}</td>
         <td>
-            <a :href="'/book/'+book.id" th:text="#{general.edit}">Edit</a>
+            <a :href="'/hotel/'+hotel.id" th:text="#{general.edit}">Edit</a>
         </td>
         <td>
-            <button @click="deleteBook(book.id)" type="submit" value="value" class="btn-link" th:text="#{general.delete}">Delete</button>
+            <button @click="deleteBook(hotel.id)" type="submit" value="value" class="btn-link" th:text="#{general.delete}">Delete</button>
             <div><pre>{{ response }}</pre></div>
         </td>
     </tr>
@@ -41,7 +41,7 @@
 </table>
 <div>
     <div class="text-white" style="width:200px">
-        <form method="get" action="/book/new">
+        <form method="get" action="/hotel/new">
             <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.new}">Create new</button>
         </form>
     </div>
@@ -69,7 +69,7 @@
                 },
                 methods: {
                     deleteBook(e) {
-                        axios.delete(`/book/${e}`, {bookid: e})
+                        axios.delete(`/hotel/${e}`, {bookid: e})
                             .then(response => {this.books=this.books.filter(b=>b.id!=e);
                     })
                     },

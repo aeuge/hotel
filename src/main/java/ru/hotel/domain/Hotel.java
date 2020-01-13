@@ -5,17 +5,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("privilege")
-public class Privilege {
+@Document("hotels")
+public class Hotel {
     @Id
-    public String id;
+    private String id;
+    private String kod;
+    private String name;
 
-    public String name;
+    public Hotel() {}
 
-    public Privilege() {};
-
-    public Privilege(String id,String name) {
-        this.id = id;
+    public Hotel(String name) {
         this.name = name;
     }
 

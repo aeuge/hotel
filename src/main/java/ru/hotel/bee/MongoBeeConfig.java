@@ -17,7 +17,7 @@ public class MongoBeeConfig {
     @Bean
     public Mongobee mongobee(Environment environment) {
         Mongobee runner = new Mongobee(mongo);
-        runner.setDbName("library");
+        runner.setDbName("hotel");
         runner.setChangeLogsScanPackage(DatabaseChangelog.class.getPackage().getName());
         runner.setSpringEnvironment(environment);
         return runner;

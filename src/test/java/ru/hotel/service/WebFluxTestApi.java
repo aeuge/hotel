@@ -11,9 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import ru.hotel.domain.Book;
-import ru.hotel.repository.BookRepository;
+import ru.hotel.domain.Hotel;
 
 import static org.mockito.Mockito.when;
 
@@ -26,7 +24,7 @@ public class WebFluxTestApi {
     private WebTestClient fluxTest;
 
     @MockBean
-    private BookService bookService;
+    private HotelService hotelService;
 
     @WithMockUser(
             username = "admin",
@@ -36,13 +34,13 @@ public class WebFluxTestApi {
     @Test
     @DisplayName("должен вернуться список книг")
     public void test() throws Exception{
-        Flux<Book> book = Flux.just(new Book("Honda"));
-        when(bookService.getAll()).thenReturn(book);
+        Flux<Hotel> book = Flux.just(new Hotel("Honda"));
+        when(hotelService.getAll()).thenReturn(book);
 
         fluxTest.get().uri("/api/allbooks")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody().json("[{\"id\":null,\"title\":\"Honda\",\"author\":[],\"genre\":[],\"comment\":[]}]");
+                .expectBody().json("[{\"id\":null,\"name\":\"Honda\",\"author\":[],\"genre\":[],\"comment\":[]}]");
     }
 
 

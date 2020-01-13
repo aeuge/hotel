@@ -10,24 +10,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.hotel.repository.BookRepository;
-import ru.hotel.rest.BookController;
+import ru.hotel.repository.HotelRepository;
+import ru.hotel.rest.HotelController;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(secure = true)
-@WebMvcTest(BookController.class)
+@WebMvcTest(HotelController.class)
 @DisplayName("Тестирование контроллера mvc")
 public class WebFluxMvcTest {
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private BookRepository bookRepository;
+    private HotelRepository hotelRepository;
 
     @MockBean
-    private BookService bookService;
+    private HotelService hotelService;
 
     @MockBean
     private MongoUserDetailsService userDetailsService;

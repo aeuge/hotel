@@ -8,33 +8,33 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import ru.hotel.domain.Book;
-import ru.hotel.repository.BookRepository;
+import ru.hotel.domain.Hotel;
+import ru.hotel.repository.HotelRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @DataMongoTest
 @DisplayName("Тестирование монго репозитория книг")
-class BookRepositoryTest {
+class HotelRepositoryTest {
 
     @BeforeEach
-    void before(@Autowired BookRepository bookRepository) {
-        bookRepository.save(new Book("Отзвуки серебряного ветра","Эльтеррус Иар", "Фантастика")).subscribe();
+    void before(@Autowired HotelRepository hotelRepository) {
+        hotelRepository.save(new Hotel("Отзвуки серебряного ветра","Эльтеррус Иар", "Фантастика")).subscribe();
     }
 
     @Test
     @DisplayName("должно вернуть книгу по части названия")
-    void getByTitlePart(@Autowired BookRepository bookRepository) throws InterruptedException {
-        Flux<Book> book = bookRepository.findByTitleContaining("еребр");
+    void getByTitlePart(@Autowired HotelRepository hotelRepository) throws InterruptedException {
+        Flux<Hotel> book = hotelRepository.findByTitleContaining("еребр");
         StepVerifier
                 .create(book)
-                .assertNext(b -> assertEquals(b.getTitle(),"Отзвуки серебряного ветра"));
+                .assertNext(b -> assertEquals(b.getName(),"Отзвуки серебряного ветра"));
     }
 
     @Test
     @DisplayName("должна быть добавлена запись без ID")
-    void getByFIONew(@Autowired BookRepository bookRepository) {
-        Mono<Book> book = bookRepository.save(new Book("Конституция","Народ России", "Сборник правил"));
+    void getByFIONew(@Autowired HotelRepository hotelRepository) {
+        Mono<Hotel> book = hotelRepository.save(new Hotel("Конституция","Народ России", "Сборник правил"));
         StepVerifier
                 .create(book)
                 .assertNext(b -> assertNotNull(b.getId()))
@@ -44,8 +44,8 @@ class BookRepositoryTest {
 
     @Test
     @DisplayName("должно вернуть книгу по части ФИО автора")
-    void getByAuthorPart(@Autowired BookRepository bookRepository) {
-        Flux<Book> book = bookRepository.findByAuthorRegex("Иар");
+    void getByAuthorPart(@Autowired HotelRepository hotelRepository) {
+        Flux<Hotel> book = hotelRepository.findByAuthorRegex("Иар");
         StepVerifier
                 .create(book)
                 .assertNext(b -> assertEquals(b.getAuthor().toString(), "[Эльтеррус Иар]"));

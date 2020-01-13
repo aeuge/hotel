@@ -4,17 +4,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class BookController {
-    public BookController() {
+public class HotelController {
+    public HotelController() {
     }
 
     @GetMapping("/")
-    public String listBook() {
+    public String listHotel() {
         return "index";
     }
 
     @GetMapping("/book/{id}")
-    public String editBook() {
-        return "book";
+    public String editHotel() {
+        return "hotel";
     }
 }

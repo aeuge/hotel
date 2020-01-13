@@ -3,10 +3,10 @@ package ru.hotel.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.hotel.domain.LibraryUsers;
+import ru.hotel.domain.HotelUsers;
 import ru.hotel.domain.Privilege;
 import ru.hotel.repository.PrivilegeRepository;
-import ru.hotel.repository.LibraryUsersRepository;
+import ru.hotel.repository.HotelUsersRepository;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import static java.lang.Thread.sleep;
 
 @Service
 public class InitUsersService {
-    private LibraryUsersRepository usersRepository;
+    private HotelUsersRepository usersRepository;
     private PrivilegeRepository privilegeRepository;
 
-    public InitUsersService(LibraryUsersRepository usersRepository, PrivilegeRepository privilegeRepository) throws InterruptedException {
+    public InitUsersService(HotelUsersRepository usersRepository, PrivilegeRepository privilegeRepository) throws InterruptedException {
         this.usersRepository = usersRepository;
         this.privilegeRepository = privilegeRepository;
         initPrivilegesAndUSers();
@@ -31,8 +31,8 @@ public class InitUsersService {
         Privilege privilege2 = new Privilege("2", "ROLE_USER");
         Privilege privilege3 = new Privilege("100", "BOOK_READ_PRIVILEGE");
         Privilege privilege4 = new Privilege("101", "BOOK_WRITE_PRIVILEGE");
-        LibraryUsers admin = new LibraryUsers("admin", adminpassword, List.of(privilege, privilege3, privilege4));
-        LibraryUsers user = new LibraryUsers("user", userpassword, List.of(privilege2, privilege3));
+        HotelUsers admin = new HotelUsers("admin", adminpassword, List.of(privilege, privilege3, privilege4));
+        HotelUsers user = new HotelUsers("user", userpassword, List.of(privilege2, privilege3));
         privilegeRepository.deleteAll().subscribe();
         usersRepository.deleteAll().subscribe();
         sleep(1000);

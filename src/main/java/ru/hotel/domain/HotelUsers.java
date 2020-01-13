@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Document("users")
-public class LibraryUsers {
+public class HotelUsers {
         @Id
         public String id;
 
@@ -21,7 +21,7 @@ public class LibraryUsers {
         @DBRef
         public List<Privilege> roles = new ArrayList<>();
 
-        public LibraryUsers(String username, String password, List<Privilege> roles) {
+        public HotelUsers(String username, String password, List<Privilege> roles) {
                 this.username = username;
                 this.password = password;
                 this.roles.addAll(roles);

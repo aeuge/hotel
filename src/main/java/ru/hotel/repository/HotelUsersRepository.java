@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono;
 import ru.hotel.domain.*;
 
 @Repository
-public interface LibraryUsersRepository extends ReactiveMongoRepository<LibraryUsers, String> {
-    Mono<LibraryUsers> findByUsername(String username);
+public interface HotelUsersRepository extends ReactiveMongoRepository<HotelUsers, String> {
+    Mono<HotelUsers> findByUsername(String username);
 }
