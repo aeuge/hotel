@@ -15,26 +15,17 @@
         <label for="id">ID:</label>
         <input id="id" name="id" type="text" readonly="readonly" v-model="id"/>
     </div>
-
     <div>
-        <label for="title" th:text="#{general.title}">Title:</label>
-        <input id="title" name="title" type="text" v-model="title"/>
+        <label for="kod" th:text="#{general.kod}">Kod:</label>
+        <input id="kod" name="kod" type="text" v-model="kod"/>
     </div>
     <div>
-        <label for="author" th:text="#{general.author}">Authors:</label>
-        <textarea id="author" name="author" type="text" v-model="author"></textarea>
-    </div>
-    <div>
-        <label for="genre" th:text="#{general.genre}">Genres:</label>
-        <textarea id="genre" name="genre" v-model="genre"></textarea>
-    </div>
-    <div>
-        <label for="comment" th:text="#{general.comment}">Comments:</label>
-        <textarea id="comment" name="comment" v-model="comment"></textarea>
+        <label for="name" th:text="#{general.title}">Title:</label>
+        <input id="name" name="name" type="text" v-model="name"/>
     </div>
     <div><pre>{{ response }}</pre></div>
     <div class="text-white" style="width: 200px">
-        <button @click="saveBook(id)" value="value" class="btn-link" th:text="#{general.save}">Save</button>
+        <button @click="saveHotel(id)" value="value" class="btn-link" th:text="#{general.save}">Save</button>
     </div>
 </div>
     <div class="text-white" style="width:200px">
@@ -52,26 +43,22 @@
     // fetch, ES6, Vue
     var currentLocation = window.location;
     if (currentLocation.pathname != '/hotel/new') {
-    axios.get('/api/hotel/'+currentLocation.pathname.slice(6))
-    .then(bookDto => {
+        axios.get('/api/hotel/'+currentLocation.pathname.split('/').pop())
+    .then(hotelDto => {
         new Vue({
             el: '#edit-form',
             data: {
-                id : bookDto.data.id,
-                title: bookDto.data.title,
-                author: bookDto.data.author.join('\n'),
-                genre: bookDto.data.genre.join('\n'),
-                comment: bookDto.data.comment.join('\n'),
+                id : hotelDto.data.id,
+                kod: hotelDto.data.kod,
+                name: hotelDto.data.name,
                 response : ''
             },
             methods: {
-                saveBook(e) {
+                saveHotel(e) {
                     axios.post('/api/hotel/'+e, {
                         id: this.id,
-                        title: this.title,
-                        author: Array.isArray(this.author) ? this.author : this.author.split("\n"),
-                        genre: Array.isArray(this.genre) ? this.genre : this.genre.split("\n"),
-                        comment: Array.isArray(this.comment) ? this.comment : this.comment.split("\n")
+                        kod: this.kod,
+                        name: this.name
                     }).then(response => {
                         response.status==200 ? this.response = "изменения успешно сохранены" : this.response = "ошибка сохранения изменений";
                 })
@@ -83,20 +70,16 @@
             el: '#edit-form',
             data: {
                 id : 'new',
+                kod: '',
                 title: '',
-                author: '',
-                genre: '',
-                comment: '',
                 response : ''
             },
             methods: {
                 saveBook(e) {
                     axios.post('/api/hotel/'+e, {
                         id: this.id,
-                        title: this.title,
-                        author: Array.isArray(this.author) ? this.author : this.author.split("\n"),
-                        genre: Array.isArray(this.genre) ? this.genre : this.genre.split("\n"),
-                        comment: Array.isArray(this.comment) ? this.comment : this.comment.split("\n")
+                        kod: this.kod,
+                        name: this.name,
                     }).then(response => {
                         if (response.status==200) {
                             this.response = "изменения успешно сохранены";

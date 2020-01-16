@@ -34,13 +34,13 @@ public class WebFluxTestApi {
     @Test
     @DisplayName("должен вернуться список книг")
     public void test() throws Exception{
-        Flux<Hotel> book = Flux.just(new Hotel("Honda"));
+        Flux<Hotel> book = Flux.just(new Hotel("Тестовый отель"));
         when(hotelService.getAll()).thenReturn(book);
 
         fluxTest.get().uri("/api/allbooks")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody().json("[{\"id\":null,\"name\":\"Honda\",\"author\":[],\"genre\":[],\"comment\":[]}]");
+                .expectBody().json("[{\"id\":null,\"type\":\"Тестовый отель\"}]");
     }
 
 

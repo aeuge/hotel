@@ -5,6 +5,8 @@ spring:
       host: localhost
       port: 27017
       database: hotel
+    application:
+      name: Hotel stats by AEuegene
 management:
   endpoints:
     web:

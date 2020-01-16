@@ -14,27 +14,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @DataMongoTest
-@DisplayName("Тестирование монго репозитория книг")
+@DisplayName("Тестирование монго репозитория отелей")
 class HotelRepositoryTest {
 
     @BeforeEach
     void before(@Autowired HotelRepository hotelRepository) {
-        hotelRepository.save(new Hotel("Отзвуки серебряного ветра","Эльтеррус Иар", "Фантастика")).subscribe();
+        hotelRepository.save(new Hotel("1111","Тестовый отель")).subscribe();
     }
 
     @Test
-    @DisplayName("должно вернуть книгу по части названия")
+    @DisplayName("должно вернуть отель по части названия")
     void getByTitlePart(@Autowired HotelRepository hotelRepository) throws InterruptedException {
-        Flux<Hotel> book = hotelRepository.findByTitleContaining("еребр");
+        Flux<Hotel> book = hotelRepository.findByNameContaining("отель");
         StepVerifier
                 .create(book)
-                .assertNext(b -> assertEquals(b.getName(),"Отзвуки серебряного ветра"));
+                .assertNext(b -> assertEquals(b.getName(),"Тестовый отель"));
     }
 
     @Test
     @DisplayName("должна быть добавлена запись без ID")
     void getByFIONew(@Autowired HotelRepository hotelRepository) {
-        Mono<Hotel> book = hotelRepository.save(new Hotel("Конституция","Народ России", "Сборник правил"));
+        Mono<Hotel> book = hotelRepository.save(new Hotel("1111","Тестовый отель"));
         StepVerifier
                 .create(book)
                 .assertNext(b -> assertNotNull(b.getId()))
@@ -42,12 +42,4 @@ class HotelRepositoryTest {
                 .verify();
     }
 
-    @Test
-    @DisplayName("должно вернуть книгу по части ФИО автора")
-    void getByAuthorPart(@Autowired HotelRepository hotelRepository) {
-        Flux<Hotel> book = hotelRepository.findByAuthorRegex("Иар");
-        StepVerifier
-                .create(book)
-                .assertNext(b -> assertEquals(b.getAuthor().toString(), "[Эльтеррус Иар]"));
-    }
 }

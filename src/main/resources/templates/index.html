@@ -9,26 +9,22 @@
     <title th:text="#{general.info}">Info</title></head>
 <body><div class="TitleTop" th:text="#{general.info}">Info</div>
 <!-- Mount point -->
-<table class="text-white books" id="books-table">
+<table class="text-white hotels" id="hotels-table">
     <thead>
     <tr>
         <td>ID</td>
+        <td th:text="#{general.kod}">Kod</td>
         <td th:text="#{general.title}">Title</td>
-        <td th:text="#{general.author}">Author</td>
-        <td th:text="#{general.genre}">Genre</td>
-        <td th:text="#{general.comment}">Comment</td>
         <td th:text="#{general.edit}">Edit</td>
         <td th:text="#{general.delete}">Delete</td>
     </tr>
     </thead>
     <tbody>
     <!-- This is a Vue2 template -->
-    <tr v-for="hotel in books">
+    <tr v-for="hotel in hotels">
         <td>{{hotel.id}}</td>
-        <td>{{hotel.title}}</td>
-        <td>{{hotel.author}}</td>
-        <td>{{hotel.genre}}</td>
-        <td>{{hotel.comment}}</td>
+        <td>{{hotel.kod}}</td>
+        <td>{{hotel.name}}</td>
         <td>
             <a :href="'/hotel/'+hotel.id" th:text="#{general.edit}">Edit</a>
         </td>
@@ -58,19 +54,19 @@
 </div>
 <script>
     // fetch, ES6, Vue
-    axios.get('/api/allbooks')
+    axios.get('/api/allhotels')
 
         .then(response => {
             new Vue({
-                el: '#books-table',
+                el: '#hotels-table',
                 data: {
-                    books : response.data,
+                    hotels : response.data,
                     response:''
                 },
                 methods: {
                     deleteBook(e) {
                         axios.delete(`/hotel/${e}`, {bookid: e})
-                            .then(response => {this.books=this.books.filter(b=>b.id!=e);
+                            .then(response => {this.hotels=this.hotels.filter(b=>b.id!=e);
                     })
                     },
                 }

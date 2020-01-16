@@ -5,21 +5,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("hotels")
-public class Hotel {
+@Document("types")
+public class PaymentType {
     @Id
     private String id;
     private String kod;
-    private String name;
+    private String type;
 
-    public Hotel() {}
+    public PaymentType() {}
 
-    public Hotel(String name) {
-        this.name = name;
+    public PaymentType(String type) {
+        this.type = type;
     }
 
-    public Hotel(String kod, String name) {
+    public PaymentType(String kod, String type) {
         this.kod = kod;
-        this.name = name;
+        this.type = type;
     }
 }

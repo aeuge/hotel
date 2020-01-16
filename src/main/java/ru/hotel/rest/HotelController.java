@@ -13,7 +13,7 @@ public class HotelController {
         return "index";
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/hotel/{id}")
     public String editHotel() {
         return "hotel";
     }

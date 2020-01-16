@@ -9,9 +9,9 @@ import ru.hotel.domain.Hotel;
 
 @Repository
 public interface HotelRepository extends ReactiveMongoRepository<Hotel, String> {
-    Flux<Hotel> findByTitleContaining(String title);
+    Flux<Hotel> findByNameContaining(String title);
     Flux<Hotel> findAll();
     Mono<Hotel> findById(String id);
-    Mono<Hotel> findByTitle(String title);
+    Mono<Hotel> findByName(String title);
     Mono<Void> deleteById(String id);
 }
