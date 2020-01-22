@@ -17,7 +17,7 @@ public class SecurityConfiguration {
         http.csrf().disable()
                 .authorizeExchange().pathMatchers( "/", "/api/allbooks").authenticated()
                 .and()
-                .authorizeExchange().pathMatchers("/batch").hasRole("ADMIN")
+                .authorizeExchange().pathMatchers("/parse").hasRole("ADMIN")
                 .anyExchange().permitAll()
                 .and()
                 .formLogin()

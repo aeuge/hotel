@@ -9,7 +9,7 @@ import ru.hotel.domain.PaymentType;
 @Data
 public class PaymentTypeWithWebElement {
     private String id;
-    private String kod;
+    private Integer kod;
     private String type;
     private WebElement wel;
 
@@ -19,12 +19,12 @@ public class PaymentTypeWithWebElement {
         this.type = type;
     }
 
-    public PaymentTypeWithWebElement(String kod, String type) {
+    public PaymentTypeWithWebElement(Integer kod, String type) {
         this.kod = kod;
         this.type = type;
     }
 
-    public PaymentTypeWithWebElement(String id, String kod, String type) {
+    public PaymentTypeWithWebElement(String id, Integer kod, String type) {
         this.id = id;
         this.kod = kod;
         this.type = type;

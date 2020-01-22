@@ -47,15 +47,24 @@
         </form>
     </div>
     <div class="text-white" style="width:200px">
-        <form method="get" action="/parse">
-            <button type="submit" class="btn btn-primary btn-block btn-large">Parce it!!</button>
-        </form>
+            <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
+            <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
+            <label for="endDate" th:text="#{general.endDate}">endDate:</label>
+            <input id="endDate" name="endDate" type="text" v-model="endDate"/>
+            <button onclick="parse()" value="value" class="btn btn-primary btn-block btn-large" th:text="#{general.parse}">Parse</button>
+            <label id="response"></label>
     </div>
 </div>
 <script>
     // fetch, ES6, Vue
+    var date = document.getElementById('beginDate');
+    var dateObj = new Date();
+    dateObj.setDate(dateObj.getDate()-1);
+    date.value = dateObj.toISOString().slice(0,10);
+    var date2 = document.getElementById('endDate');
+    var dateObj2 = new Date();
+    date2.value = dateObj2.toISOString().slice(0,10);
     axios.get('/api/allhotels')
-
         .then(response => {
             new Vue({
                 el: '#hotels-table',
@@ -68,10 +77,20 @@
                         axios.delete(`/hotel/${e}`, {bookid: e})
                             .then(response => {this.hotels=this.hotels.filter(b=>b.id!=e);
                     })
-                    },
+                    }
                 }
             })
         });
+    function parse() {
+        var beginDate = document.getElementById('beginDate');
+        var endDate = document.getElementById('endDate');
+        var response = document.getElementById('response');
+        response.innerHTML = "запущен процесс парсинга";
+        axios.get('/parse', {params: {beginDate : beginDate.value, endDate : endDate.value}})
+            .then(otvet => {
+            otvet.status==200 ? response.innerHTML = "Парсинг успешно выполнен" : response.innerHTML = "ошибка парсинга";
+    })
+    };
 
 </script>
 </body>

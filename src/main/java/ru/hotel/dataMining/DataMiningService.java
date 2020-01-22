@@ -1,5 +1,7 @@
 package ru.hotel.dataMining;
 
+import java.time.LocalDate;
+
 public interface DataMiningService {
-    void extractData() throws InterruptedException;
+    Integer extractData(LocalDate beginDate, LocalDate endDate) throws InterruptedException;
 }

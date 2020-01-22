@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PaymentType {
     @Id
     private String id;
-    private String kod;
+    private Integer kod;
     private String type;
 
     public PaymentType() {}
@@ -18,7 +18,7 @@ public class PaymentType {
         this.type = type;
     }
 
-    public PaymentType(String kod, String type) {
+    public PaymentType(Integer kod, String type) {
         this.kod = kod;
         this.type = type;
     }

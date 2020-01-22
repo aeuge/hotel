@@ -15,6 +15,8 @@ import ru.hotel.dataMining.DataMiningService;
 import ru.hotel.service.HotelService;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class RestHotelController {
@@ -70,11 +72,16 @@ public class RestHotelController {
     }
 
     @GetMapping("/parse")
-    public void parse(@AuthenticationPrincipal(expression = "principal") Principal principal)  {
+    public Integer parse(@RequestParam String beginDate, @RequestParam String endDate, @AuthenticationPrincipal(expression = "principal") Principal principal)  {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate bd = LocalDate.parse(beginDate, dateTimeFormatter);
+        LocalDate ed = LocalDate.parse(endDate, dateTimeFormatter);
         try {
-            dataMiningService.extractData();
+            return dataMiningService.extractData(bd, ed);
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 500;
         }
     }
 }
