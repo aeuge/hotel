@@ -3,6 +3,8 @@ package ru.hotel.rest;
 import lombok.Data;
 import ru.hotel.domain.Hotel;
 
+import java.time.LocalDate;
+
 import static ru.hotel.rest.ConverterHotelToDto.toDto;
 
 @Data

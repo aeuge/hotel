@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/css/jquery-3.js" type="text/javascript" ></script>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+    <script src="/css/axios.min.js"></script>
+    <link href="/css/auth.css" rel="stylesheet">
+    <title th:text="#{general.info}">Info</title></head>
+<body><div class="TitleTop" th:text="#{general.info}">Info</div>
+<!-- Mount point -->
+<table class="text-white hotels" id="hotels-table">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td th:text="#{general.kod}">Kod</td>
+        <td th:text="#{general.title}">Title</td>
+        <td th:text="#{general.edit}">Edit</td>
+        <td th:text="#{general.delete}">Delete</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- This is a Vue2 template -->
+    <tr v-for="hotel in hotels">
+        <td>{{hotel.id}}</td>
+        <td>{{hotel.kod}}</td>
+        <td>{{hotel.name}}</td>
+        <td>
+            <a :href="'/hotel/'+hotel.id" th:text="#{general.edit}">Edit</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <div class="text-white" style="width:200px">
+        <form method="get" action="/hotel/new">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.new}">Create new</button>
+        </form>
+    </div>
+    <div class="text-white" style="width:200px">
+        <form method="get" action="/logout">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.logout}">Logout</button>
+        </form>
+    </div>
+    <div class="text-white" style="width:200px">
+            <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
+            <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
+            <label for="endDate" th:text="#{general.endDate}">endDate:</label>
+            <input id="endDate" name="endDate" type="text" v-model="endDate"/>
+            <button onclick="parse()" value="value" class="btn btn-primary btn-block btn-large" th:text="#{general.parse}">Parse</button>
+            <label id="response"></label>
+    </div>
+</div>
+<script>
+    // fetch, ES6, Vue
+    var date = document.getElementById('beginDate');
+    var dateObj = new Date();
+    dateObj.setDate(dateObj.getDate()-1);
+    date.value = dateObj.toISOString().slice(0,10);
+    var date2 = document.getElementById('endDate');
+    var dateObj2 = new Date();
+    date2.value = dateObj2.toISOString().slice(0,10);
+    axios.get('/api/allhotels')
+        .then(response => {
+            new Vue({
+                el: '#hotels-table',
+                data: {
+                    hotels : response.data,
+                    response:''
+                },
+                methods: {
+                    deleteHotel(e) {
+                        axios.delete(`/hotel/${e}`, {bookid: e})
+                            .then(response => {this.hotels=this.hotels.filter(b=>b.id!=e);
+                    })
+                    }
+                }
+            })
+        });
+    function parse() {
+        var beginDate = document.getElementById('beginDate');
+        var endDate = document.getElementById('endDate');
+        var response = document.getElementById('response');
+        response.innerHTML = "запущен процесс парсинга";
+        axios.get('/parse', {params: {beginDate : beginDate.value, endDate : endDate.value}})
+            .then(otvet => {
+            otvet.status==200 ? response.innerHTML = "Парсинг успешно выполнен" : response.innerHTML = "ошибка парсинга";
+    })
+    };
+
+</script>
+</body>
+</html>

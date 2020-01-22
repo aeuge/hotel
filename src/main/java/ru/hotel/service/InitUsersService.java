@@ -29,8 +29,8 @@ public class InitUsersService {
         String userpassword = passwordEncoder.encode("user");
         Privilege privilege = new Privilege("1", "ROLE_ADMIN");
         Privilege privilege2 = new Privilege("2", "ROLE_USER");
-        Privilege privilege3 = new Privilege("100", "BOOK_READ_PRIVILEGE");
-        Privilege privilege4 = new Privilege("101", "BOOK_WRITE_PRIVILEGE");
+        Privilege privilege3 = new Privilege("100", "HOTEL_READ_PRIVILEGE");
+        Privilege privilege4 = new Privilege("101", "HOTEL_WRITE_PRIVILEGE");
         HotelUsers admin = new HotelUsers("admin", adminpassword, List.of(privilege, privilege3, privilege4));
         HotelUsers user = new HotelUsers("user", userpassword, List.of(privilege2, privilege3));
         privilegeRepository.deleteAll().subscribe();

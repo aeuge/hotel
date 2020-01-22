@@ -9,50 +9,44 @@
     <title th:text="#{general.info}">Info</title></head>
 <body><div class="TitleTop" th:text="#{general.info}">Info</div>
 <!-- Mount point -->
-<table class="text-white hotels" id="hotels-table">
+<div class="text-white" style="width:200px">
+    <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
+    <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
+    <label for="endDate" th:text="#{general.endDate}">endDate:</label>
+    <input id="endDate" name="endDate" type="text" v-model="endDate"/>
+    <label id="response"></label>
+</div>
+<table class="text-white hotels" id="payments-table">
     <thead>
     <tr>
-        <td>ID</td>
-        <td th:text="#{general.kod}">Kod</td>
-        <td th:text="#{general.title}">Title</td>
-        <td th:text="#{general.edit}">Edit</td>
-        <td th:text="#{general.delete}">Delete</td>
+        <td th:text="#{general.nameHotel}">Name of hotel</td>
+        <td th:text="#{general.totalAmmount}">total ammount</td>
+        <td th:text="#{general.total1}">card</td>
+        <td th:text="#{general.total2}">cash</td>
+        <td th:text="#{general.total3}">buisness</td>
     </tr>
     </thead>
     <tbody>
     <!-- This is a Vue2 template -->
-    <tr v-for="hotel in hotels">
-        <td>{{hotel.id}}</td>
-        <td>{{hotel.kod}}</td>
+    <tr v-for="payment in payments">
         <td>{{hotel.name}}</td>
-        <td>
-            <a :href="'/hotel/'+hotel.id" th:text="#{general.edit}">Edit</a>
-        </td>
-        <td>
-            <button @click="deleteBook(hotel.id)" type="submit" value="value" class="btn-link" th:text="#{general.delete}">Delete</button>
-            <div><pre>{{ response }}</pre></div>
-        </td>
+        <td>{{hotel.totalAmmount}}</td>
+        <td>{{hotel.total1}}</td>
+        <td>{{hotel.total2}}</td>
+        <td>{{hotel.total3}}</td>
     </tr>
     </tbody>
 </table>
 <div>
     <div class="text-white" style="width:200px">
-        <form method="get" action="/hotel/new">
-            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.new}">Create new</button>
+        <form method="get" action="/hotels">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.listhotels}">List of Hotels</button>
         </form>
     </div>
     <div class="text-white" style="width:200px">
         <form method="get" action="/logout">
             <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.logout}">Logout</button>
         </form>
-    </div>
-    <div class="text-white" style="width:200px">
-            <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
-            <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
-            <label for="endDate" th:text="#{general.endDate}">endDate:</label>
-            <input id="endDate" name="endDate" type="text" v-model="endDate"/>
-            <button onclick="parse()" value="value" class="btn btn-primary btn-block btn-large" th:text="#{general.parse}">Parse</button>
-            <label id="response"></label>
     </div>
 </div>
 <script>
@@ -64,33 +58,16 @@
     var date2 = document.getElementById('endDate');
     var dateObj2 = new Date();
     date2.value = dateObj2.toISOString().slice(0,10);
-    axios.get('/api/allhotels')
+    axios.get('/api/allpayments', {params: {beginDate : dateObj.value, endDate : dateObj2.value}})
         .then(response => {
             new Vue({
-                el: '#hotels-table',
+                el: '#payments-table',
                 data: {
-                    hotels : response.data,
+                    payments : response.data,
                     response:''
-                },
-                methods: {
-                    deleteBook(e) {
-                        axios.delete(`/hotel/${e}`, {bookid: e})
-                            .then(response => {this.hotels=this.hotels.filter(b=>b.id!=e);
-                    })
-                    }
                 }
             })
         });
-    function parse() {
-        var beginDate = document.getElementById('beginDate');
-        var endDate = document.getElementById('endDate');
-        var response = document.getElementById('response');
-        response.innerHTML = "запущен процесс парсинга";
-        axios.get('/parse', {params: {beginDate : beginDate.value, endDate : endDate.value}})
-            .then(otvet => {
-            otvet.status==200 ? response.innerHTML = "Парсинг успешно выполнен" : response.innerHTML = "ошибка парсинга";
-    })
-    };
 
 </script>
 </body>

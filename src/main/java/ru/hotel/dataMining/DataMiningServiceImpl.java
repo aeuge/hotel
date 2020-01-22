@@ -214,7 +214,7 @@ public class DataMiningServiceImpl implements DataMiningService {
                 Integer betweenMonth = (nowDate.getYear() - beginDate.getYear()) * 12 - beginDate.getMonthValue() + nowDate.getMonthValue();
                 chooseDateAndFill(betweenMonth, beginDate.getDayOfMonth(), new Payment(kodHotel,beginDate));
                 for (int i = beginDate.getDayOfMonth() + 1; i <= endDate.getDayOfMonth(); i++) {
-                    chooseDateAndFill(0, i, new Payment(kodHotel, beginDate.plusDays(i-1)));
+                    chooseDateAndFill(0, i, new Payment(kodHotel, beginDate.plusDays(i-beginDate.getDayOfMonth())));
                 }
             }
         } else {
