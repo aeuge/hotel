@@ -34,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Mono<Payment> savePayment(Payment payment) {
+        System.out.println(payment);
         return dao.findByKodHotelAndData(payment.getKodHotel(), payment.getData()).switchIfEmpty(Mono.just(new Payment()))
                 .map(v -> {
                     v.setAll(payment);
@@ -57,6 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .sum("payment1").as("payment1")
                         .sum("payment2").as("payment2")
                         .sum("payment3").as("payment3")
+                        .sum("payment4").as("payment4")
 
         );
         Flux<PaymentDto> ar = reactiveMongoTemplate.aggregate(agg,"payments", PaymentDto.class);

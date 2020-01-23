@@ -30,13 +30,19 @@ public class DatabaseChangelog {
 
     @ChangeSet(order = "002", id = "addTypeData", author = "aeuge")//, runAlways = true)
     public void insertTypeData(DB db) {
-        //db.dropDatabase();
         DBCollection myCollection = db.getCollection("types");
         DBObject dbObject = (DBObject) JSON.parse("{'kod':'1','type':'Картой через терминал'}");
         myCollection.insert(dbObject);
         dbObject = (DBObject) JSON.parse("{'kod':'2','type':'Наличными через кассу'}");
         myCollection.insert(dbObject);
         dbObject = (DBObject) JSON.parse("{'kod':'3','type':'Безналичный расчет для юр. лиц (счет выставлять автоматически)'}");
+        myCollection.insert(dbObject);
+    }
+
+    @ChangeSet(order = "003", id = "addTypeData2", author = "aeuge")//, runAlways = true)
+    public void insertTypeData2(DB db) {
+        DBCollection myCollection = db.getCollection("types");
+        DBObject dbObject = (DBObject) JSON.parse("{'kod':'4','type':'Банковский перевод для юр. лиц (счет выставлять автоматически)'}");
         myCollection.insert(dbObject);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Hotel {
     @Id
     private String id;
-    private String kod;
+    private Integer kod;
     private String name;
 
     public Hotel() {}
@@ -18,7 +18,7 @@ public class Hotel {
         this.name = name;
     }
 
-    public Hotel(String kod, String name) {
+    public Hotel(Integer kod, String name) {
         this.kod = kod;
         this.name = name;
     }

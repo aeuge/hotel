@@ -9,12 +9,17 @@ public class HotelController {
     }
 
     @GetMapping("/")
-    public String listHotel() {
+    public String listPayment() {
         return "index";
     }
 
     @GetMapping("/hotel/{id}")
     public String editHotel() {
         return "hotel";
+    }
+
+    @GetMapping("/hotels")
+    public String listHotel() {
+        return "hotels";
     }
 }

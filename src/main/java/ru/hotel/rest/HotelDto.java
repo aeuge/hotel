@@ -10,14 +10,14 @@ import static ru.hotel.rest.ConverterHotelToDto.toDto;
 @Data
 public class HotelDto {
     private String id;
-    private String kod;
+    private Integer kod;
     private String name;
 
     public HotelDto() { }
 
     public HotelDto(String name) {
         this.name = name;
-        this.kod = "";
+        this.kod = 0;
         this.id = "";
     }
 

@@ -17,6 +17,7 @@ public class Payment {
     private Integer payment1 = 0;
     private Integer payment2 = 0;
     private Integer payment3 = 0;
+    private Integer payment4 = 0;
 
     public Payment() {}
 
@@ -26,7 +27,7 @@ public class Payment {
     }
 
     public boolean checkEquals() {
-        return (paymentTotal==payment1+payment2+payment3)?true:false;
+        return (paymentTotal==payment1+payment2+payment3+payment4)?true:false;
     }
 
     public void setAll(Payment payment) {
@@ -36,5 +37,6 @@ public class Payment {
         this.payment1 = payment.getPayment1();
         this.payment2 = payment.getPayment2();
         this.payment3 = payment.getPayment3();
+        this.payment4 = payment.getPayment4();
     }
 }

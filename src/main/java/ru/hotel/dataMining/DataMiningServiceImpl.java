@@ -77,7 +77,8 @@ public class DataMiningServiceImpl implements DataMiningService {
         driver.get("https://www.travelline.ru/secure/webpms/extranet/#/WebPmsReport/billing");
         Thread.sleep(3000);
         List<WebElement> listTextSpans = driver.findElements(By.xpath(".//span"));
-        for (Integer i = 1200; i <  listTextSpans.size();i++) {
+        //System.out.println("list spans "+listTextSpans.size());
+        for (Integer i = listTextSpans.size()-200; i <  listTextSpans.size();i++) {
             if (!listTextSpans.get(i).getText().isEmpty()) {
                 if (listTextSpans.get(i).getText().startsWith("Всего активных")) {//находим span с результатами
                     itogo = listTextSpans.get(i);
@@ -136,6 +137,7 @@ public class DataMiningServiceImpl implements DataMiningService {
                     case (1) : {payment.setPayment1(paymentAmount);break;}
                     case (2) : {payment.setPayment2(paymentAmount);break;}
                     case (3) : {payment.setPayment3(paymentAmount);break;}
+                    case (4) : {payment.setPayment4(paymentAmount);break;}
                 }
                 pwwel.getWel().click();
                 Thread.sleep(2000);
@@ -187,12 +189,11 @@ public class DataMiningServiceImpl implements DataMiningService {
         fillPayment(payment);
     }
 
-    private void extractExactHotel(String kod) throws InterruptedException {
-        kodHotel = Integer.parseInt(kod);
+    private void extractExactHotel(Integer kod) throws InterruptedException {
+        kodHotel=kod;
         driver.get("https://www.travelline.ru/secure/SwitchUserContext.ashx?ReturnUrl=%2fsecure%2fwebpms%2fextranet%2f&App=Management&Context="+kod);
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class='provider-id ng-binding']")));
-        //System.out.println("Номер гостинницы: "+dynamicElement.getText());
         findItogo();
         findFilterButton();
         LocalDate nowDate = now();
@@ -234,7 +235,6 @@ public class DataMiningServiceImpl implements DataMiningService {
         payments = new ArrayList<>();
         paymentTypeService.getAll().map(e->payments.add(e)).subscribe();
         Thread.sleep(100);
-        hotels.forEach(System.out::println);
         for (Hotel hotel : hotels) {
             extractExactHotel(hotel.getKod());
         }

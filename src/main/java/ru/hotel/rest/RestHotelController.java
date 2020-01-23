@@ -19,6 +19,8 @@ import ru.hotel.service.PaymentService;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class RestHotelController {
@@ -45,13 +47,20 @@ public class RestHotelController {
 
     @GetMapping("/api/allpayments")
     @PreAuthorize("@reactivePermissionEvaluator.hasPermission(#principal, 'hotel', 'read')")
-    @HystrixCommand(fallbackMethod = "getPayments", groupKey = "PaymentService", commandKey = "findAll", commandProperties = {
+    @HystrixCommand(fallbackMethod = "getDefaultPayments", groupKey = "PaymentService", commandKey = "findAll", commandProperties = {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500")})
     public Flux<PaymentDto> getAllPayments(@RequestParam String beginDate, @RequestParam String endDate, @AuthenticationPrincipal(expression = "principal") Principal principal) throws InterruptedException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate bd = LocalDate.parse(beginDate, dateTimeFormatter);
         LocalDate ed = LocalDate.parse(endDate, dateTimeFormatter);
-        Flux<PaymentDto> fp = paymentService.agreg(bd, ed);
+        List<Hotel> hotels = new ArrayList<>();
+        service.getAll().map(e->hotels.add(e)).subscribe();
+        Flux<PaymentDto> fp = paymentService.agreg(bd, ed).map(e->{hotels.forEach(r->{
+            if (r.getKod().equals(e.getKodHotel())) {
+                e.setName(r.getName());
+            }});
+            return e;
+        });
         fp.subscribe(System.out::println);
         return fp;
     }
@@ -87,7 +96,7 @@ public class RestHotelController {
         return Flux.just(new HotelDto("ПУстотень"));
     }
 
-    public Flux<PaymentDto> getDefaultPayments(@AuthenticationPrincipal(expression = "principal") Principal principal) {
+    public Flux<PaymentDto> getDefaultPayments(@RequestParam String beginDate, @RequestParam String endDate, @AuthenticationPrincipal(expression = "principal") Principal principal) {
         return Flux.just(new PaymentDto("Ошибка"));
     }
 

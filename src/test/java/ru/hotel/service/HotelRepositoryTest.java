@@ -19,7 +19,7 @@ class HotelRepositoryTest {
 
     @BeforeEach
     void before(@Autowired HotelRepository hotelRepository) {
-        hotelRepository.save(new Hotel("1111","Тестовый отель")).subscribe();
+        hotelRepository.save(new Hotel(1111,"Тестовый отель")).subscribe();
     }
 
     @Test
@@ -34,7 +34,7 @@ class HotelRepositoryTest {
     @Test
     @DisplayName("должна быть добавлена запись без ID")
     void getByFIONew(@Autowired HotelRepository hotelRepository) {
-        Mono<Hotel> book = hotelRepository.save(new Hotel("1111","Тестовый отель"));
+        Mono<Hotel> book = hotelRepository.save(new Hotel(1111,"Тестовый отель"));
         StepVerifier
                 .create(book)
                 .assertNext(b -> assertNotNull(b.getId()))

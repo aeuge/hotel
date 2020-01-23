@@ -6,15 +6,23 @@
     <script src="webjars/vue/2.5.16/vue.min.js"></script>
     <script src="/css/axios.min.js"></script>
     <link href="/css/auth.css" rel="stylesheet">
+    <script src="/css/calendar.js"></script>
+    <link href="/css/calendar.css" rel="stylesheet">
     <title th:text="#{general.info}">Info</title></head>
 <body><div class="TitleTop" th:text="#{general.info}">Info</div>
 <!-- Mount point -->
-<div class="text-white" style="width:200px">
-    <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
-    <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
-    <label for="endDate" th:text="#{general.endDate}">endDate:</label>
-    <input id="endDate" name="endDate" type="text" v-model="endDate"/>
-    <label id="response"></label>
+<div class="text-white" style="width:600px">
+    <table class="text-white">
+
+        <tr><td><label for="beginDate" th:text="#{general.beginDate}">beginDate:</label></td>
+            <td><label for="endDate" th:text="#{general.endDate}">endDate:</label></td></tr>
+        <tr><td><input id="beginDate" name="beginDate" type="text" v-model="beginDate" onclick="showcalendar(this)"/></td>
+         <td><input id="endDate" name="endDate" type="text" v-model="endDate" onclick="showcalendar(this)"/></td></tr>
+    </table>
+    <div class="text-white" style="width:200px">
+        <button onclick="refresh()" value="value" class="btn btn-primary btn-block btn-large" th:text="#{general.refresh}">REfresh</button>
+    </div>
+        <label id="response"></label></label>
 </div>
 <table class="text-white hotels" id="payments-table">
     <thead>
@@ -24,16 +32,18 @@
         <td th:text="#{general.total1}">card</td>
         <td th:text="#{general.total2}">cash</td>
         <td th:text="#{general.total3}">buisness</td>
+        <td th:text="#{general.total4}">buisnessBank</td>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tbody">
     <!-- This is a Vue2 template -->
     <tr v-for="payment in payments">
-        <td>{{hotel.name}}</td>
-        <td>{{hotel.totalAmmount}}</td>
-        <td>{{hotel.total1}}</td>
-        <td>{{hotel.total2}}</td>
-        <td>{{hotel.total3}}</td>
+        <td>{{payment.name}}</td>
+        <td>{{payment.paymentTotal}}</td>
+        <td>{{payment.payment1}}</td>
+        <td>{{payment.payment2}}</td>
+        <td>{{payment.payment3}}</td>
+        <td>{{payment.payment4}}</td>
     </tr>
     </tbody>
 </table>
@@ -58,16 +68,35 @@
     var date2 = document.getElementById('endDate');
     var dateObj2 = new Date();
     date2.value = dateObj2.toISOString().slice(0,10);
-    axios.get('/api/allpayments', {params: {beginDate : dateObj.value, endDate : dateObj2.value}})
-        .then(response => {
+
+    function refresh() {
+        var beginDate = document.getElementById('beginDate');
+        var endDate = document.getElementById('endDate');
+        var tbody = document.getElementById('tbody');
+        tbody.innerHTML = "<tr v-for=\"payment in payments\">\n" +
+            "        <td>{{payment.name}}</td>\n" +
+            "        <td>{{payment.paymentTotal}}</td>\n" +
+            "        <td>{{payment.payment1}}</td>\n" +
+            "        <td>{{payment.payment2}}</td>\n" +
+            "        <td>{{payment.payment3}}</td>\n" +
+            "        <td>{{payment.payment4}}</td>\n" +
+            "    </tr>"
+        axios.get('/api/allpayments', {params: {beginDate : beginDate.value, endDate : endDate.value}})
+            .then(response => {
             new Vue({
                 el: '#payments-table',
                 data: {
-                    payments : response.data,
-                    response:''
+                    payments : response.data
                 }
             })
         });
+    }
+    $( function() {
+        $( "#beginDate" ).datepicker();
+    } );
+    window.onload = function () {
+        refresh();
+    }
 
 </script>
 </body>

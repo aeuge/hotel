@@ -6,6 +6,8 @@
     <script src="webjars/vue/2.5.16/vue.min.js"></script>
     <script src="/css/axios.min.js"></script>
     <link href="/css/auth.css" rel="stylesheet">
+    <script src="/css/calendar.js"></script>
+    <link href="/css/calendar.css" rel="stylesheet">
     <title th:text="#{general.info}">Info</title></head>
 <body><div class="TitleTop" th:text="#{general.info}">Info</div>
 <!-- Mount point -->
@@ -38,15 +40,20 @@
         </form>
     </div>
     <div class="text-white" style="width:200px">
+        <form method="get" action="/">
+            <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.gomain}">Main page</button>
+        </form>
+    </div>
+    <div class="text-white" style="width:200px">
         <form method="get" action="/logout">
             <button type="submit" class="btn btn-primary btn-block btn-large" th:text="#{general.logout}">Logout</button>
         </form>
     </div>
     <div class="text-white" style="width:200px">
             <label for="beginDate" th:text="#{general.beginDate}">beginDate:</label>
-            <input id="beginDate" name="beginDate" type="text" v-model="beginDate"/>
+            <input id="beginDate" name="beginDate" type="text" v-model="beginDate" onclick="showcalendar(this)"/>
             <label for="endDate" th:text="#{general.endDate}">endDate:</label>
-            <input id="endDate" name="endDate" type="text" v-model="endDate"/>
+            <input id="endDate" name="endDate" type="text" v-model="endDate" onclick="showcalendar(this)"/>
             <button onclick="parse()" value="value" class="btn btn-primary btn-block btn-large" th:text="#{general.parse}">Parse</button>
             <label id="response"></label>
     </div>
@@ -84,7 +91,7 @@
         response.innerHTML = "запущен процесс парсинга";
         axios.get('/parse', {params: {beginDate : beginDate.value, endDate : endDate.value}})
             .then(otvet => {
-            otvet.status==200 ? response.innerHTML = "Парсинг успешно выполнен" : response.innerHTML = "ошибка парсинга";
+            otvet.status==200 ? response.innerHTML = "Запрос на парсинг успешно отправлен" : response.innerHTML = "ошибка парсинга";
     })
     };
 
