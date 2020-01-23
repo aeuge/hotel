@@ -151,7 +151,6 @@ public class DataMiningServiceImpl implements DataMiningService {
             }
         }
         paymentService.savePayment(payment).subscribe();
-        System.out.println(payment);
     }
 
     private void chooseDateAndFill(Integer month, Integer day, Payment payment) throws InterruptedException {
