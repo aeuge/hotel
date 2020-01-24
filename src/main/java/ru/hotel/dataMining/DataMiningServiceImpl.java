@@ -114,7 +114,7 @@ public class DataMiningServiceImpl implements DataMiningService {
             WebElement otmenaButton = null;
             for (WebElement wel : listXButtonPaymentType) {
                 for (PaymentType ptwwe : payments) {
-                    if (wel.getText().equalsIgnoreCase(ptwwe.getType())) {
+                    if (wel.getText().startsWith(ptwwe.getType())) {
                         paypentsWithWebElement.add(new PaymentTypeWithWebElement(ptwwe, wel));
                     }
                     if (wel.getText().equalsIgnoreCase("Отменить все")) {
@@ -140,12 +140,15 @@ public class DataMiningServiceImpl implements DataMiningService {
                     case (4) : {payment.setPayment4(paymentAmount);break;}
                 }
                 pwwel.getWel().click();
-                Thread.sleep(2000);
+                Thread.sleep(1000);
+            }
+            for (PaymentTypeWithWebElement pwwel : paypentsWithWebElement) {
+                pwwel.getWel().click();
+                Thread.sleep(1000);
             }
             if (!payment.checkEquals()) {
                 System.out.println("!!! суммы не совпадают "+payment);
-                paypentsWithWebElement.forEach(e->e.getWel().click());
-                Thread.sleep(2000);
+                Thread.sleep(1000);
                 Integer paymentAmount = extractPaymentFromString(itogo.getText());
                 payment.setPaymentTotal(paymentAmount);
             }
@@ -153,38 +156,48 @@ public class DataMiningServiceImpl implements DataMiningService {
         paymentService.savePayment(payment).subscribe();
     }
 
-    private void chooseDateAndFill(Integer month, Integer day, Payment payment) throws InterruptedException {
+    private void chooseDateAndFill(Integer month, Integer day, Integer firstChangeDate, Payment payment) throws InterruptedException {
         //System.out.println("ВЫзвали изменить календарь на даты "+month+" "+day);
         List<WebElement> listInputs = driver.findElements(By.xpath(".//input"));
-        listInputs.get(0).click();//открываем календарик
-        Thread.sleep(200);
-        List<WebElement> listUL = driver.findElements(By.xpath(".//ul"));
-        List<WebElement> listButtonsInCalendarBeginDate = listUL.get(listUL.size()-2).findElements(By.xpath(".//button"));
-        //listButtonsInCalendarBeginDate.forEach(e->System.out.println("button calendar "+e.getText()));
-        for (int i = 0; i < month; i++) {
-            listButtonsInCalendarBeginDate.get(0).click();
-            Thread.sleep(100);
-            listButtonsInCalendarBeginDate = listUL.get(listUL.size()-2).findElements(By.xpath(".//button"));
-            Thread.sleep(100);
-        }//выбираем нужный месяц
-        Integer dayButton = -1;
-        for (WebElement wel : listButtonsInCalendarBeginDate) {
-            dayButton++;
-            if (wel.getText().equalsIgnoreCase(day.toString())) break;
+        if (firstChangeDate==0) {
+            listInputs.get(0).click();//открываем календарик
+            Thread.sleep(200);
+            List<WebElement> listUL = driver.findElements(By.xpath(".//ul"));
+            List<WebElement> listButtonsInCalendarBeginDate = listUL.get(listUL.size() - 2).findElements(By.xpath(".//button"));
+            //listButtonsInCalendarBeginDate.forEach(e->System.out.println("button calendar "+e.getText()));
+            for (int i = 0; i < month; i++) {
+                listButtonsInCalendarBeginDate.get(0).click();
+                Thread.sleep(100);
+                listButtonsInCalendarBeginDate = listUL.get(listUL.size() - 2).findElements(By.xpath(".//button"));
+                Thread.sleep(100);
+            }//выбираем нужный месяц
+            Integer dayButton = -1;
+            for (WebElement wel : listButtonsInCalendarBeginDate) {
+                dayButton++;
+                if (wel.getText().equalsIgnoreCase("1")) break;
+            }
+            dayButton = dayButton + day - 1;
+            listButtonsInCalendarBeginDate.get(dayButton).click();//кликаем нужную дату
+            Thread.sleep(200);
+        } else {
+            listInputs.get(2).click();//открываем календарик
+            Thread.sleep(200);
+            List<WebElement> listUL2 = driver.findElements(By.xpath(".//ul"));
+            List<WebElement> listButtonsInCalendarEndDate = listUL2.get(listUL2.size() - 1).findElements(By.xpath(".//button"));
+            for (int i = 0; i < month; i++) {
+                listButtonsInCalendarEndDate.get(0).click();
+                Thread.sleep(100);
+                listButtonsInCalendarEndDate = listUL2.get(listUL2.size() - 1).findElements(By.xpath(".//button"));
+                Thread.sleep(100);
+            }//выбираем нужный месяц
+            Integer dayButton = -1;
+            for (WebElement wel : listButtonsInCalendarEndDate) {
+                dayButton++;
+                if (wel.getText().equalsIgnoreCase("1")) break;
+            }
+            dayButton = dayButton + day - 1;
+            listButtonsInCalendarEndDate.get(dayButton).click();//кликаем нужную дату
         }
-        listButtonsInCalendarBeginDate.get(dayButton).click();//кликаем нужную дату
-        Thread.sleep(200);
-        listInputs.get(2).click();//открываем календарик
-        Thread.sleep(200);
-        List<WebElement> listUL2 = driver.findElements(By.xpath(".//ul"));
-        List<WebElement> listButtonsInCalendarEndDate = listUL2.get(listUL2.size()-1).findElements(By.xpath(".//button"));
-        for (int i = 0; i < month; i++) {
-            listButtonsInCalendarEndDate.get(0).click();
-            Thread.sleep(100);
-            listButtonsInCalendarEndDate = listUL2.get(listUL2.size()-1).findElements(By.xpath(".//button"));
-            Thread.sleep(100);
-        }//выбираем нужный месяц
-        listButtonsInCalendarEndDate.get(dayButton).click();//кликаем нужную дату
         fillPayment(payment);
     }
 
@@ -200,11 +213,11 @@ public class DataMiningServiceImpl implements DataMiningService {
         if (resultDays>-1) {
             if (resultDays == 1) {
                 if ((endDate.getDayOfMonth() == 1) && (endDate.getMonth() == nowDate.getMonth())) {
-                    chooseDateAndFill(0, 1, new Payment(kodHotel,endDate));
-                    chooseDateAndFill(1, beginDate.getDayOfMonth(), new Payment(kodHotel,beginDate));
+                    chooseDateAndFill(0, 1, 1, new Payment(kodHotel,endDate));
+                    chooseDateAndFill(1, beginDate.getDayOfMonth(),1, new Payment(kodHotel,beginDate));
                 } else if (endDate.getMonth() == nowDate.getMonth()) {
-                    chooseDateAndFill(0, endDate.getDayOfMonth(), new Payment(kodHotel,endDate));
-                    chooseDateAndFill(0, beginDate.getDayOfMonth(), new Payment(kodHotel,beginDate));
+                    chooseDateAndFill(0, beginDate.getDayOfMonth(), 1,new Payment(kodHotel,beginDate));
+                    chooseDateAndFill(0, endDate.getDayOfMonth(),0, new Payment(kodHotel,endDate));
                 } else {
                     System.out.println("нельзя по 2 дня в прошлых месяцах выбирать");
                 }
@@ -212,9 +225,9 @@ public class DataMiningServiceImpl implements DataMiningService {
                 System.out.println("месяц начала и конца не соответствуют");
             } else {
                 Integer betweenMonth = (nowDate.getYear() - beginDate.getYear()) * 12 - beginDate.getMonthValue() + nowDate.getMonthValue();
-                chooseDateAndFill(betweenMonth, beginDate.getDayOfMonth(), new Payment(kodHotel,beginDate));
+                chooseDateAndFill(betweenMonth, beginDate.getDayOfMonth(),1, new Payment(kodHotel,beginDate));
                 for (int i = beginDate.getDayOfMonth() + 1; i <= endDate.getDayOfMonth(); i++) {
-                    chooseDateAndFill(0, i, new Payment(kodHotel, beginDate.plusDays(i-beginDate.getDayOfMonth())));
+                    chooseDateAndFill(0, i, 0, new Payment(kodHotel, beginDate.plusDays(i-beginDate.getDayOfMonth())));
                 }
             }
         } else {
