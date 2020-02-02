@@ -10,7 +10,7 @@
 
     <groupId>ru</groupId>
     <artifactId>hotel</artifactId>
-    <version>1.0</version>
+    <version>1.01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

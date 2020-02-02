@@ -7,10 +7,8 @@ public class ServiceRunnable implements Runnable {
     private LocalDate endDate;
     private Integer result = 200;
     private DataMiningService dataMiningService;
-    private Object holder;
 
-    public ServiceRunnable(Object holder, LocalDate beginDate, LocalDate endDate, DataMiningService dataMiningService) {
-        this.holder = holder;
+    public ServiceRunnable(LocalDate beginDate, LocalDate endDate, DataMiningService dataMiningService) {
         this.beginDate = beginDate;
         this.endDate = endDate;
         this.dataMiningService = dataMiningService;
@@ -19,9 +17,6 @@ public class ServiceRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            /*synchronized (holder) {
-                holder.notifyAll();
-            }*/
             result = dataMiningService.extractData(beginDate, endDate);
         } catch (Exception e) {
             System.out.println(e.getMessage());

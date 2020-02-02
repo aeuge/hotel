@@ -68,7 +68,7 @@ public class RestHotelController {
     @GetMapping("/api/hotel/{id}")
     @PreAuthorize("@reactivePermissionEvaluator.hasPermission(#principal, 'hotel', 'read')")
     @HystrixCommand(groupKey = "HotelService", commandKey = "findHotel")
-    public Mono<HotelDto> getBook(@PathVariable String id, @AuthenticationPrincipal(expression = "principal") Principal principal) {
+    public Mono<HotelDto> getHotel(@PathVariable String id, @AuthenticationPrincipal(expression = "principal") Principal principal) {
         System.out.println("запрос обработан "+id);
         return service.getById(id).map(ConverterHotelToDto::toDto);
     }
@@ -76,13 +76,13 @@ public class RestHotelController {
     @DeleteMapping("/hotel/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_ADMIN2')")
-    @HystrixCommand(groupKey = "HotelService", commandKey = "deleteBook")
-    public Mono<Void> deleteBook(@PathVariable String id, @AuthenticationPrincipal(expression = "principal") Principal principal) {
+    @HystrixCommand(groupKey = "HotelService", commandKey = "deleteHotel")
+    public Mono<Void> deleteHotel(@PathVariable String id, @AuthenticationPrincipal(expression = "principal") Principal principal) {
         return service.deleteHotel(id);
     }
 
     @PostMapping("/api/hotel/{id}")
-    @PreAuthorize("@reactivePermissionEvaluator.hasPermission(#principal, 'book', 'write')")
+    @PreAuthorize("@reactivePermissionEvaluator.hasPermission(#principal, 'hotel', 'write')")
     @HystrixCommand(groupKey = "HotelService", commandKey = "saveHotel")
     public Mono<Hotel> saveBook(@RequestBody HotelDto hotelDto, @AuthenticationPrincipal(expression = "principal") Principal principal) {
         return service.getById(hotelDto.getId()).switchIfEmpty(Mono.just(new Hotel()))
@@ -100,18 +100,15 @@ public class RestHotelController {
         return Flux.just(new PaymentDto("Ошибка"));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/parse")
     public Integer parse(@RequestParam String beginDate, @RequestParam String endDate, @AuthenticationPrincipal(expression = "principal") Principal principal) throws InterruptedException {
-        Object holder = new Object();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate bd = LocalDate.parse(beginDate, dateTimeFormatter);
         LocalDate ed = LocalDate.parse(endDate, dateTimeFormatter);
-        ServiceRunnable serviceRunnable = new ServiceRunnable(holder,bd,ed,dataMiningService);
+        ServiceRunnable serviceRunnable = new ServiceRunnable(bd,ed,dataMiningService);
         Thread myThread = new Thread(serviceRunnable);
         myThread.start();
-        /*synchronized (holder) {
-            holder.wait();
-        }*/
         return serviceRunnable.getResult();
     }
 }

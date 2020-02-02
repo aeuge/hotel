@@ -5,10 +5,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import ru.hotel.Main;
 import ru.hotel.domain.Hotel;
 import ru.hotel.domain.Payment;
 import ru.hotel.domain.PaymentType;
@@ -57,7 +61,10 @@ public class DataMiningServiceImpl implements DataMiningService {
         catch (Exception e) {
         }
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("window-size=1800x900");
+        driver = new ChromeDriver(options);
         driver.get("https://www.travelline.ru/secure/Enter.aspx");
         WebElement element = driver.findElement(By.name("username"));
         element.sendKeys(login);
@@ -224,23 +231,31 @@ public class DataMiningServiceImpl implements DataMiningService {
     }
 
     public Integer extractData(LocalDate beginDate, LocalDate endDate) throws InterruptedException {
-        this.beginDate = beginDate;
-        this.endDate = endDate;
-        init();
-        WebElement dynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class='provider-id ng-binding']")));
-        //System.out.println("Первоначальный номер гостинницы: "+dynamicElement.getText());
-        List<Hotel> hotels = new ArrayList<>();
-        service.getAll().map(e->hotels.add(e)).subscribe();
-        payments = new ArrayList<>();
-        paymentTypeService.getAll().map(e->payments.add(e)).subscribe();
-        Thread.sleep(100);
-        for (Hotel hotel : hotels) {
-            extractExactHotel(hotel.getKod());
+        Logger logger = LoggerFactory.getLogger(Main.class);
+        try {
+            this.beginDate = beginDate;
+            this.endDate = endDate;
+            init();
+            WebElement dynamicElement = (new WebDriverWait(driver, 10))
+                    .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class='provider-id ng-binding']")));
+            //System.out.println("Первоначальный номер гостинницы: "+dynamicElement.getText());
+            List<Hotel> hotels = new ArrayList<>();
+            service.getAll().map(e -> hotels.add(e)).subscribe();
+            payments = new ArrayList<>();
+            paymentTypeService.getAll().map(e -> payments.add(e)).subscribe();
+            Thread.sleep(100);
+            for (Hotel hotel : hotels) {
+                logger.info("Заполняем сатистику для отеля "+hotel.getName());
+                extractExactHotel(hotel.getKod());
+            }
+            //Thread.sleep(200000);
+            System.out.println(" finish");
+        } catch (Exception e){
+            logger.error("!!!ERROR "+e.toString());
+            driver.close();
         }
-        //Thread.sleep(200000);
-        driver.close();
-        System.out.println(" finish");
-        return exitStatus = 200;
+        finally {
+            return exitStatus = 200;
+        }
     }
 }

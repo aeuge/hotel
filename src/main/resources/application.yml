@@ -22,5 +22,5 @@ info:
     description: spring boot actuator application
     version: 1.0
 logging:
-  file: test.log
+  file: hotel.log
 
