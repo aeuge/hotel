@@ -4,6 +4,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.LocalDate.now;
 
 @RestController
 public class RestHotelController {
@@ -100,7 +103,6 @@ public class RestHotelController {
         return Flux.just(new PaymentDto("Ошибка"));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/parse")
     public Integer parse(@RequestParam String beginDate, @RequestParam String endDate, @AuthenticationPrincipal(expression = "principal") Principal principal) throws InterruptedException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -111,4 +113,6 @@ public class RestHotelController {
         myThread.start();
         return serviceRunnable.getResult();
     }
+
+
 }

@@ -6,6 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import ru.hotel.service.PaymentService;
 import ru.hotel.service.PaymentTypeService;
 
 import java.io.FileInputStream;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -41,6 +44,7 @@ public class DataMiningServiceImpl implements DataMiningService {
     private LocalDate beginDate = null;
     private LocalDate endDate = null;
     private Integer exitStatus = 500;
+    private Logger logger = null;
 
     public DataMiningServiceImpl(HotelService service, PaymentTypeService paymentTypeService, PaymentService paymentService) {
         this.service = service;
@@ -48,24 +52,24 @@ public class DataMiningServiceImpl implements DataMiningService {
         this.paymentService = paymentService;
     }
 
-    private void init (){
+    private void init () throws InterruptedException {
         Properties props = new Properties();
         String login = new String();
         String password = new String();
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            props.load(new FileInputStream(classLoader.getResource("config.ini").getFile()));
+            props.load(classLoader.getResourceAsStream("config.ini"));
             login = props.getProperty("LOGIN");
             password = props.getProperty("PASSWORD");
         }
         catch (Exception e) {
+            logger.error("failed to find config.ini");
         }
         WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("window-size=1800x900");
-        driver = new ChromeDriver(options);
-        driver.get("https://www.travelline.ru/secure/Enter.aspx");
+        driver = new ChromeDriver();
+        driver.get("https://www.travelline.ru/secure/Enter.aspx?lng=ru");
+        Thread.sleep(3000);
+        logger.info("login-"+login);
         WebElement element = driver.findElement(By.name("username"));
         element.sendKeys(login);
         element = driver.findElement(By.name("password"));
@@ -193,6 +197,7 @@ public class DataMiningServiceImpl implements DataMiningService {
         dayButton = dayButton + day - 1;
         listButtonsInCalendarDate.get(dayButton).click();//кликаем нужную дату
         Thread.sleep(200);
+        System.out.println(" fill");
         fillPayment(payment);
     }
 
@@ -204,6 +209,7 @@ public class DataMiningServiceImpl implements DataMiningService {
         findItogo();
         findFilterButton();
         LocalDate nowDate = now();
+        System.out.println("-----");
         long resultDays = ChronoUnit.DAYS.between(beginDate, endDate);
         if (resultDays>-1) {
             if (resultDays == 1) {
@@ -231,7 +237,7 @@ public class DataMiningServiceImpl implements DataMiningService {
     }
 
     public Integer extractData(LocalDate beginDate, LocalDate endDate) throws InterruptedException {
-        Logger logger = LoggerFactory.getLogger(Main.class);
+        logger = LoggerFactory.getLogger(Main.class);
         try {
             this.beginDate = beginDate;
             this.endDate = endDate;
@@ -252,9 +258,9 @@ public class DataMiningServiceImpl implements DataMiningService {
             System.out.println(" finish");
         } catch (Exception e){
             logger.error("!!!ERROR "+e.toString());
-            driver.close();
         }
         finally {
+            driver.close();
             return exitStatus = 200;
         }
     }
