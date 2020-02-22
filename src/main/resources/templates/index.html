@@ -75,20 +75,53 @@
         var tbody = document.getElementById('tbody');
         tbody.innerHTML = "<tr v-for=\"payment in payments\">\n" +
             "        <td>{{payment.name}}</td>\n" +
-            "        <td>{{payment.paymentTotal}}</td>\n" +
-            "        <td>{{payment.payment1}}</td>\n" +
-            "        <td>{{payment.payment2}}</td>\n" +
-            "        <td>{{payment.payment3}}</td>\n" +
-            "        <td>{{payment.payment4}}</td>\n" +
-            "    </tr>"
+            "        <td class='totali'>{{payment.paymentTotal}}</td>\n" +
+            "        <td class='total1'>{{payment.payment1}}</td>\n" +
+            "        <td class='total2'>{{payment.payment2}}</td>\n" +
+            "        <td class='total3'>{{payment.payment3}}</td>\n" +
+            "        <td class='total4'>{{payment.payment4}}</td>\n" +
+            "    </tr>\n" +
+            "    <tr>" +
+            "        <td>Сумма:</td>\n" +
+            "        <td id=\"summi\"></td>\n" +
+            "        <td id=\"summ1\"></td>\n" +
+            "        <td id=\"summ2\"></td>\n" +
+            "        <td id=\"summ3\"></td>\n" +
+            "        <td id=\"summ4\"></td>\n" +
+            "    </tr>\n";
         axios.get('/api/allpayments', {params: {beginDate : beginDate.value, endDate : endDate.value}})
             .then(response => {
             new Vue({
                 el: '#payments-table',
                 data: {
                     payments : response.data
+                },
+                methods: {
+                    total(){
+                        var total=0;
+                        $(".totali").each(function() { total+=parseInt($(this).text()); });
+                        $("#summi").text(total);
+                        total=0;
+                        $(".total1").each(function() { total+=parseInt($(this).text()); });
+                        $("#summ1").text(total);
+                        total=0;
+                        $(".total2").each(function() { total+=parseInt($(this).text()); });
+                        $("#summ2").text(total);
+                        total=0;
+                        $(".total3").each(function() { total+=parseInt($(this).text()); });
+                        $("#summ3").text(total);
+                        total=0;
+                        $(".total4").each(function() { total+=parseInt($(this).text()); });
+                        $("#summ4").text(total);
+                    }
+                },
+                mounted: function() {
+                    this.$nextTick(function () {
+                        setTimeout(this.total,1000);
+                    })
                 }
-            })
+            });
+
         });
     }
     /*$( function() {

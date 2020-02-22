@@ -1,5 +1,6 @@
 package ru.hotel.service;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,8 @@ public class PaymentServiceImpl implements PaymentService {
                         .sum("payment1").as("payment1")
                         .sum("payment2").as("payment2")
                         .sum("payment3").as("payment3")
-                        .sum("payment4").as("payment4")
+                        .sum("payment4").as("payment4"),
+                sort(Sort.Direction.ASC,"kodHotel")
 
         );
         Flux<PaymentDto> ar = reactiveMongoTemplate.aggregate(agg,"payments", PaymentDto.class);
