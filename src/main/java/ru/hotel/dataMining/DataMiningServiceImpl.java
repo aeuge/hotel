@@ -66,7 +66,10 @@ public class DataMiningServiceImpl implements DataMiningService {
             logger.error("failed to find config.ini");
         }
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("window-size=1800x900");
+        driver = new ChromeDriver(options);
         driver.get("https://www.travelline.ru/secure/Enter.aspx?lng=ru");
         Thread.sleep(3000);
         logger.info("login-"+login);
@@ -197,7 +200,7 @@ public class DataMiningServiceImpl implements DataMiningService {
         dayButton = dayButton + day - 1;
         listButtonsInCalendarDate.get(dayButton).click();//кликаем нужную дату
         Thread.sleep(200);
-        System.out.println(" fill");
+        //System.out.println(" fill");
         fillPayment(payment);
     }
 
@@ -209,7 +212,7 @@ public class DataMiningServiceImpl implements DataMiningService {
         findItogo();
         findFilterButton();
         LocalDate nowDate = now();
-        System.out.println("-----");
+        //System.out.println("-----");
         long resultDays = ChronoUnit.DAYS.between(beginDate, endDate);
         if (resultDays>-1) {
             if (resultDays == 1) {
