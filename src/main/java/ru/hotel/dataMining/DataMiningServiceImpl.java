@@ -266,6 +266,7 @@ public class DataMiningServiceImpl implements DataMiningService {
         }
         finally {
             driver.close();
+            driver.quit();
             return exitStatus = 200;
         }
     }
