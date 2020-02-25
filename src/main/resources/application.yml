@@ -2,7 +2,7 @@ spring:
     banner:
       location: banner.txt
     data.mongodb:
-      host: localhost
+      host: mymongo
       port: 27017
       database: hotel
     application:

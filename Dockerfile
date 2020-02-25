@@ -10,16 +10,12 @@ RUN mvn install
 
 FROM openjdk:12.0.2-jdk-oracle
 
-RUN apt-get update
-RUN apt-get install -y gnupg wget curl unzip --no-install-recommends && \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list && \
-    apt-get update -y && \
-    apt-get install -y google-chrome-stable && \
-    CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]*") && \
-    DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
-    wget -q --continue -P /chromedriver "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
-    unzip /chromedriver/chromedriver* -d /chromedriver
+RUN curl -O  https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm && \
+    yum install google-chrome-stable_current_x86_64.rpm -y && \
+    yum install unzip -y && \
+    mkdir /opt/chrome && \
+    curl -O https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip && \
+    unzip chromedriver_linux64.zip -d /opt/chrome
 
 WORKDIR /app
 
